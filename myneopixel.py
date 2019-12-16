@@ -27,6 +27,7 @@ def fade_in_time_and_values(num_steps, total_time, start_bright, end_bright):
         bright_values.append(this_bright)
     return step_time, bright_values
 
+
 strip = PixelStrip(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
 strip.begin()
 
@@ -35,7 +36,6 @@ for i in range(strip.numPixels()):
 
 delta_t, brights = fade_in_time_and_values(100, 2, 0, 255)
 for brightness in brights:
-    strip.setBrightness(int(brightness))
-    time.sleep(delta_t)
+    strip.setPixelColor((0, int(brightness), 0))
     strip.show()
-
+    time.sleep(delta_t)
