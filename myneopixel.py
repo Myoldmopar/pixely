@@ -36,8 +36,8 @@ for i in range(strip.numPixels()):
 
 delta_t, greens = fade_in_time_and_values(100, 2, 0, 255)
 for green_intensity in greens:
-    print("Setting green intensity to: " + str(green_intensity))
     for pixel in range(0, LED_COUNT):
-        strip.setPixelColorRGB(pixel, 0, int(green_intensity), 0)
+        # print("Setting green intensity to: " + str(green_intensity))
+        strip.setPixelColor(pixel, Color(0, int(green_intensity), 0))
     strip.show()
     time.sleep(delta_t)
