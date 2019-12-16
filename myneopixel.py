@@ -5,7 +5,7 @@ LED_COUNT = 144        # Number of LED pixels.
 LED_PIN = 18          # GPIO pin connected to the pixels (18 uses PWM!).
 LED_FREQ_HZ = 800000  # LED signal frequency in hertz (usually 800khz)
 LED_DMA = 10          # DMA channel to use for generating signal (try 10)
-LED_BRIGHTNESS = 0 # initially   # Set to 0 for darkest and 255 for brightest
+LED_BRIGHTNESS = 0    # initially   # Set to 0 for darkest and 255 for brightest
 LED_INVERT = False    # True to invert the signal (when using NPN transistor level shift)
 LED_CHANNEL = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
 
@@ -34,8 +34,9 @@ strip.begin()
 for i in range(strip.numPixels()):
     strip.setPixelColor(i, Colors.GREEN)
 
-delta_t, brights = fade_in_time_and_values(100, 2, 0, 255)
-for brightness in brights:
-    strip.setPixelColor((0, int(brightness), 0))
+delta_t, greens = fade_in_time_and_values(100, 2, 0, 255)
+for green_intensity in greens:
+    for pixel in range(0, LED_COUNT):
+        strip.setPixelColorRGB(pixel, 0, int(green_intensity), 0)
     strip.show()
     time.sleep(delta_t)
