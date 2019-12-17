@@ -45,7 +45,7 @@ for i in range(strip.numPixels()):
 #     strip.show()
 #     time.sleep(delta_t)
 
-MAX_VAL = 100 # 255
+MAX_VAL = 20  # 255
 MIN_VAL = 0
 AMPLITUDE = (MAX_VAL - MIN_VAL) / 2
 DIVISIONS = 12
