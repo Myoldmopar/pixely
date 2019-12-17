@@ -52,7 +52,7 @@ c = 2 * math.pi / DIVISIONS
 offsets = [
     -0 * c, -1 * c, -2 * c, -3 * c, -4 * c, -5 * c,
     -6 * c, -7 * c, -8 * c, -9 * c, -10 * c, -11 * c,
-] * 6
+] * 8
 
 time_step = 0.5
 for offset in offsets:
@@ -63,4 +63,5 @@ for offset in offsets:
         strip.setPixelColor(pixel, Color(0, int(green_value), 0))
     strip.show()
     time_step *= 0.9
+    time_step = max(time_step, 0.1)
     time.sleep(time_step)
