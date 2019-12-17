@@ -65,15 +65,16 @@ for offset in offsets:
     time_step *= 0.9
     time_step = max(time_step, 0.02)
     time.sleep(time_step)
-
-for pixel in range(100):
-    strip.setPixelColor(pixel, Color(0, int(pixel * 1), 0))
-
-brightnesses = [0, 25, 50, 100, 125, 150, 175, 200, 225, 255, 225, 200, 175, 150, 125, 100, 75, 50, 25]
-
-while True:
-    for brightness in brightnesses:
-        for pixel in range(101, LED_COUNT):
-            strip.setPixelColor(pixel, Color(0, brightness, 0))
-        strip.show()
-        time.sleep(0.02)
+#
+# for pixel in range(100):
+#     strip.setPixelColor(pixel, Color(0, int(pixel * 1), 0))
+# strip.show()
+#
+# brightnesses = [0, 25, 50, 100, 125, 150, 175, 200, 225, 255, 225, 200, 175, 150, 125, 100, 75, 50, 25]
+#
+# while True:
+#     for brightness in brightnesses:
+#         for pixel in range(101, LED_COUNT):
+#             strip.setPixelColor(pixel, Color(0, brightness, 0))
+#         strip.show()
+#         time.sleep(0.02)
