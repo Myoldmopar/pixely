@@ -63,5 +63,5 @@ for offset in offsets:
         strip.setPixelColor(pixel, Color(0, int(green_value), 0))
     strip.show()
     time_step *= 0.9
-    time_step = max(time_step, 0.05)
+    time_step = max(time_step, 0.01)
     time.sleep(time_step)
