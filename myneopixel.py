@@ -54,7 +54,7 @@ offsets = [
     -6 * c, -7 * c, -8 * c, -9 * c, -10 * c, -11 * c,
 ] * 8
 
-time_step = 0.5
+time_step = 0.3
 for offset in offsets:
     for pixel in range(LED_COUNT):
         x = pixel / LED_COUNT
@@ -63,5 +63,5 @@ for offset in offsets:
         strip.setPixelColor(pixel, Color(0, int(green_value), 0))
     strip.show()
     time_step *= 0.9
-    time_step = max(time_step, 0.01)
+    time_step = max(time_step, 0.02)
     time.sleep(time_step)
