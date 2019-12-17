@@ -62,4 +62,4 @@ for offset in offsets:
         green_value = AMPLITUDE + AMPLITUDE * math.sin(radians)
         strip.setPixelColor(pixel, Color(0, int(green_value), 0))
     strip.show()
-    time.sleep(0.25)
+    time.sleep(0.1)
