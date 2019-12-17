@@ -36,7 +36,6 @@ strip.begin()
 for i in range(strip.numPixels()):
     strip.setPixelColor(i, Color(0, 0, 0))
 
-#
 # delta_t, greens = fade_in_time_and_values(100, 2, 0, 255)
 # for green_intensity in greens:
 #     for pixel in range(0, LED_COUNT):
@@ -51,10 +50,11 @@ AMPLITUDE = (MAX_VAL - MIN_VAL) / 2
 DIVISIONS = 12
 c = 2 * math.pi / DIVISIONS
 offsets = [
-    -0 * c, -1 * c , -2 * c, -3 * c, -4 * c, -5 * c,
-    -6 * c, -7 * c , -8 * c, -9 * c, -10 * c, -11 * c,
+    -0 * c, -1 * c, -2 * c, -3 * c, -4 * c, -5 * c,
+    -6 * c, -7 * c, -8 * c, -9 * c, -10 * c, -11 * c,
 ] * 10
 
+time_step = 1
 for offset in offsets:
     for pixel in range(LED_COUNT):
         x = pixel / LED_COUNT
@@ -62,4 +62,5 @@ for offset in offsets:
         green_value = AMPLITUDE + AMPLITUDE * math.sin(radians)
         strip.setPixelColor(pixel, Color(0, int(green_value), 0))
     strip.show()
-    time.sleep(0.1)
+    time_step *= 0.9
+    time.sleep(time_step)
