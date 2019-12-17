@@ -48,8 +48,11 @@ for i in range(strip.numPixels()):
 MAX_VAL = 100 # 255
 MIN_VAL = 0
 AMPLITUDE = (MAX_VAL - MIN_VAL) / 2
+DIVISIONS = 12
+c = 2 * math.pi / DIVISIONS
 offsets = [
-    0, -math.pi / 3, -2 * math.pi / 3, -math.pi, -4 * math.pi / 3, -5 * math.pi / 3
+    -0 * c, -1 * c , -2 * c, -3 * c, -4 * c, -5 * c,
+    -6 * c, -7 * c , -8 * c, -9 * c, -10 * c, -11 * c,
 ] * 3
 
 for offset in offsets:
@@ -59,4 +62,4 @@ for offset in offsets:
         green_value = AMPLITUDE + AMPLITUDE * math.sin(radians)
         strip.setPixelColor(pixel, Color(0, int(green_value), 0))
     strip.show()
-    time.sleep(1)
+    time.sleep(0.25)
