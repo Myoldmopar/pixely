@@ -45,11 +45,14 @@ for i in range(strip.numPixels()):
 #     strip.show()
 #     time.sleep(delta_t)
 
-MAX_VAL = 255
+MAX_VAL = 100 # 255
 MIN_VAL = 0
 AMPLITUDE = (MAX_VAL - MIN_VAL) / 2
+offsets = [
+    0, -math.pi / 3, -2 * math.pi / 3, -math.pi, -4 * math.pi / 3, -5 * math.pi / 3
+] * 3
 
-for offset in [0, -math.pi / 3, -2 * math.pi / 3, -math.pi, -4 * math.pi / 3, -5 * math.pi / 3]:
+for offset in offsets:
     for pixel in range(LED_COUNT):
         x = pixel / LED_COUNT
         radians = 2 * 3.141 * x + offset
