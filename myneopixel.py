@@ -1,5 +1,6 @@
 from rpi_ws281x import PixelStrip, Color
 import time
+import math
 
 LED_COUNT = 144        # Number of LED pixels.
 LED_PIN = 18          # GPIO pin connected to the pixels (18 uses PWM!).
@@ -31,13 +32,28 @@ def fade_in_time_and_values(num_steps, total_time, start_bright, end_bright):
 strip = PixelStrip(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
 strip.begin()
 
+# reset back to zero
 for i in range(strip.numPixels()):
-    strip.setPixelColor(i, Colors.GREEN)
+    strip.setPixelColor(i, (0, 0, 0))
 
-delta_t, greens = fade_in_time_and_values(100, 2, 0, 255)
-for green_intensity in greens:
-    for pixel in range(0, LED_COUNT):
-        # print("Setting green intensity to: " + str(green_intensity))
-        strip.setPixelColor(pixel, Color(0, int(green_intensity), 0))
+#
+# delta_t, greens = fade_in_time_and_values(100, 2, 0, 255)
+# for green_intensity in greens:
+#     for pixel in range(0, LED_COUNT):
+#         # print("Setting green intensity to: " + str(green_intensity))
+#         strip.setPixelColor(pixel, Color(0, int(green_intensity), 0))
+#     strip.show()
+#     time.sleep(delta_t)
+
+MAX_VAL = 255
+MIN_VAL = 0
+AMPLITUDE = (MAX_VAL - MIN_VAL) / 2
+
+for offset in [0, -math.pi / 3, -2 * math.pi / 3, -math.pi, -4 * math.pi / 3, -5 * math.pi / 3]:
+    for pixel in range(LED_COUNT):
+        x = pixel / LED_COUNT
+        radians = 2 * 3.141 * x + offset
+        green_value = AMPLITUDE + AMPLITUDE * math.sin(radians)
+        strip.setPixelColor(pixel, Color(0, int(green_value), 0))
     strip.show()
-    time.sleep(delta_t)
+    time.sleep(1)
