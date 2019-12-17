@@ -34,7 +34,7 @@ strip.begin()
 
 # reset back to zero
 for i in range(strip.numPixels()):
-    strip.setPixelColor(i, (0, 0, 0))
+    strip.setPixelColor(i, Color(0, 0, 0))
 
 #
 # delta_t, greens = fade_in_time_and_values(100, 2, 0, 255)
