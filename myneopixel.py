@@ -70,12 +70,12 @@ for pixel in range(100):
     strip.setPixelColor(pixel, Color(0, int(pixel * 1), 0))
     strip.show()
     time.sleep(0.02)
-#
-# brightnesses = [0, 25, 50, 100, 125, 150, 175, 200, 225, 255, 225, 200, 175, 150, 125, 100, 75, 50, 25]
-#
-# while True:
-#     for brightness in brightnesses:
-#         for pixel in range(101, LED_COUNT):
-#             strip.setPixelColor(pixel, Color(0, brightness, 0))
-#         strip.show()
-#         time.sleep(0.02)
+
+brightnesses = [0, 25, 50, 100, 125, 150, 175, 200, 225, 255, 225, 200, 175, 150, 125, 100, 75, 50, 25]
+
+for i in [0, 1, 2, 3]:
+    for brightness in brightnesses:
+        for pixel in range(101, LED_COUNT):
+            strip.setPixelColor(pixel, Color(0, brightness, 0))
+        strip.show()
+        time.sleep(0.02)
