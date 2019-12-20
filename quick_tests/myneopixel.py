@@ -56,19 +56,38 @@ def do_one_arm_charge():
         strip.show()
         time.sleep(0.02)
     
-    brightnesses = [0, 25, 50, 100, 125, 150, 175, 200, 225, 255, 225, 200, 175, 150, 125, 100, 75, 50, 25]
-    
     for i in [0, 1, 2, 3, 4, 5]:
-        for brightness in brightnesses:
+        for brightness in range(0, 255, 25):
             for pixel in range(100, LED_COUNT):
                 strip.setPixelColor(pixel, Color(0, int(brightness / 6), 0))
             strip.show()
             time.sleep(0.02)
+        for brightness in range(255, -5, -25):
+            for pixel in range(100, LED_COUNT):
+                strip.setPixelColor(pixel, Color(0, int(brightness / 6), 0))
+            strip.show()
+            time.sleep(0.02)
+    for brightness in range(0, 255, 25):
+        for pixel in range(100, LED_COUNT):
+            strip.setPixelColor(pixel, Color(0, int(brightness / 6), 0))
+        strip.show()
+        time.sleep(0.02)
 
-def reset_arm():
-    for i in range(strip.numPixels()):
-        strip.setPixelColor(i, Color(0, 0, 0))
-    strip.show()
+def reset_arm(do_fade=False):
+    if not do_fade:
+        for i in range(strip.numPixels()):
+            strip.setPixelColor(i, Color(0, 0, 0))
+        return
+    current_brightness = 40
+    while True:
+        current_brightness -= 1
+        if current_brightness < 0:
+            current_brightness = 0
+        for i in range(strip.numPixels()):
+            strip.setPixelColor(i, Color(0, current_brightness, 0))
+        strip.show()
+        if current_brightness <= 0:
+            break
 
 def set_leds_ready():
     GPIO.output(13, GPIO.LOW)
@@ -90,6 +109,7 @@ reset_arm()
 turn_off_stone()
 stone_active = False
 set_leds_ready()
+arm_on = False
 
 try:    
     while True:
@@ -99,11 +119,13 @@ try:
                 time.sleep(0.1)
                 continue
             set_leds_running()
+            arm_on = True
             do_one_arm_charge()
             set_leds_ready()
         if GPIO.input(8) == GPIO.HIGH:
             if stone_active:
-                reset_arm()
+                reset_arm(arm_on)
+                arm_on = False
                 set_leds_running()
                 turn_off_stone()
                 set_leds_ready()
