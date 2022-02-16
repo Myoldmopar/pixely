@@ -1,33 +1,41 @@
-from time import sleep
+import logging
+
+from pixely.configuration import ConfigBase
+from pixely.exceptions import NormalResetAndTurnOff
+
+logging.basicConfig(filename='debug.log', encoding='utf-8', level=logging.DEBUG)
 
 try:
-    from RPi.GPIO import input
     import RPi.GPIO as GPIO
+    logging.debug("Importing actual RPi.GPIO library")
 except ImportError:
     from pixely.gpio_mock.GPIO import GPIO
+    logging.debug("Importing mock GPIO library (presumably for testing purposes...")
 
 
 class Operator(object):
     """
     This class is a main operator for the Raspberry Pi light show.
     """
-    def __init__(self, configuration):
+    def __init__(self, configuration: ConfigBase):
         self.configuration = configuration
 
-    def run(self) -> None:
+    def run(self):
         """
-        This is the main driver function, which includes an infinite loop and performs operations according to the
-        specified configuration.
-        :return:
+        This is the main driver function, which initializes the basic GPIO mode, executes the configuration's run()
+        method, and handles different exit conditions.  All specific pin configurations, actions, and triggers are
+        handled in the run() method.
         """
-        GPIO.setmode(GPIO.BCM)
+        logging.debug("Operator started")
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BOARD)
         try:
-            while True:  # this will carry on until you hit CTRL+C
-                if GPIO.input(25):  # if port 25 == 1
-                    print("Port 25 is 1/GPIO.HIGH/True - button pressed")
-                else:
-                    print("Port 25 is 0/GPIO.LOW/False - button not pressed")
-                sleep(0.1)  # wait 0.1 seconds
-
-        except KeyboardInterrupt:
-            GPIO.cleanup()  # clean up after yourself
+            logging.debug(f"Running configuration: {self.configuration.name()}")
+            self.configuration.run()
+        except (NormalResetAndTurnOff, KeyboardInterrupt):
+            pass  # don't need to do anything, the finally: block will clean things up
+        except Exception as e:
+            print("Encountered an unexpected exception, reporting and aborting: ")
+            print(str(e))
+        finally:
+            GPIO.cleanup()

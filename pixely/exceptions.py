@@ -1,0 +1,2 @@
+class NormalResetAndTurnOff(Exception):
+    pass
