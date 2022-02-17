@@ -1,4 +1,5 @@
 import logging
+import traceback
 
 from pixely.configuration import ConfigBase
 from pixely.exceptions import NormalResetAndTurnOff
@@ -37,5 +38,6 @@ class Operator(object):
         except Exception as e:
             print("Encountered an unexpected exception, reporting and aborting: ")
             print(str(e))
+            traceback.print_exc()
         finally:
             GPIO.cleanup()
