@@ -90,7 +90,10 @@ class ArmLedStrip:
     
     def update(self):
         for i, p in enumerate(self.pixels):
-            self.strip.setPixelColor(i, Color(p.red, p.green, p.blue))
+            r = int(p.red)
+            g = int(p.green)
+            b = int(p.blue)
+            self.strip.setPixelColor(i, Color(r, g, b))
         self.strip.show()
         time.sleep(0.015)
 
