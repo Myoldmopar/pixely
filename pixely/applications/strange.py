@@ -22,7 +22,6 @@ class ArmLedStrip:
         max_brightness = 255  # This sets the absolute max, so just use 255 and adjust brightness by individual colors
         led_invert = False  # True to invert the signal (when using NPN transistor level shift)
         led_channel = 0  # set to '1' for GPIOs 13, 19, 41, 45 or 53
-        print(str(PixelStrip))
         self.strip = PixelStrip(
             self.num_leds, gpio_pin_number, led_frequency_hz, led_dma_channel, led_invert, max_brightness,
             led_channel

@@ -40,6 +40,7 @@ class Operator(object):
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(36, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         try:
+            print("Waiting for button press...")
             pressed = False
             while True:
                 # button is pressed when pin is LOW
