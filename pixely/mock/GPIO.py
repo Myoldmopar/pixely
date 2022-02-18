@@ -36,15 +36,16 @@ class GPIO(object):
     BOTH = 3
 
     @staticmethod
-    def input(x):
-        pass
+    def input(_x):
+        global response
+        return response
 
     @staticmethod
     def cleanup():
         pass
 
     @staticmethod
-    def setmode(x):
+    def setmode(_x):
         pass
 
     @staticmethod

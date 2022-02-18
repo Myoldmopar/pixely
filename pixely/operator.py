@@ -45,7 +45,6 @@ class Operator(object):
                 # button is pressed when pin is LOW
                 if not GPIO.input(36):
                     if not pressed:
-                        print("Button pressed!")
                         logging.debug(f"Running configuration: {self.configuration.name()}")
                         self.configuration.run()
                         pressed = True

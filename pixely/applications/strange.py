@@ -1,11 +1,14 @@
-from rpi_ws281x import PixelStrip, Color
 import time
 import math
 
+from rpi_ws281x import Color  # always import the innocent Color structure
 try:
+    # then try to import GPIO first, if we fail, use both the mock GPIO and mock PixelStrip classes
     import RPi.GPIO as GPIO
+    from rpi_ws281x import PixelStrip
 except (ImportError, RuntimeError):
     from pixely.mock.GPIO import GPIO
+    from pixely.mock.pixelstrip import MockStrip as PixelStrip
 
 from pixely.configuration import ConfigBase
 from pixely.pixel import StripRGBPixel
@@ -19,15 +22,11 @@ class ArmLedStrip:
         max_brightness = 255  # This sets the absolute max, so just use 255 and adjust brightness by individual colors
         led_invert = False  # True to invert the signal (when using NPN transistor level shift)
         led_channel = 0  # set to '1' for GPIOs 13, 19, 41, 45 or 53
-        try:
-            self.strip = PixelStrip(
-                self.num_leds, gpio_pin_number, led_frequency_hz, led_dma_channel, led_invert, max_brightness,
-                led_channel
-            )
-            self.strip.begin()
-        except RuntimeError:
-            from pixely.mock.pixelstrip import MockStrip
-            self.strip = MockStrip()
+        self.strip = PixelStrip(
+            self.num_leds, gpio_pin_number, led_frequency_hz, led_dma_channel, led_invert, max_brightness,
+            led_channel
+        )
+        self.strip.begin()
         self.pixels = []
 
     def charge(self):
@@ -121,3 +120,8 @@ class DoctorStrangeCostume(ConfigBase):
         arm_led_pin = 18  # GPIO pin connected to the pixels (18 uses PWM!)
         arms = ArmLedStrip(arm_led_pin)  # for now both arms are in parallel, ideally we could do them individually L/R
         arms.charge()
+
+
+if __name__ == "__main__":
+    d = DoctorStrangeCostume()
+    d.run()
