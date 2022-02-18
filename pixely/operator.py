@@ -43,6 +43,8 @@ class Operator(object):
         except (NormalResetAndTurnOff, KeyboardInterrupt):
             pass  # don't need to do anything, the finally: block will clean things up
         except Exception as e:
+            logging.error("Encountered an unexpected exception, reporting and aborting: ")
+            logging.error(str(e))
             print("Encountered an unexpected exception, reporting and aborting: ")
             print(str(e))
             traceback.print_exc()

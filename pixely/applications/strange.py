@@ -14,6 +14,17 @@ from pixely.configuration import ConfigBase
 from pixely.pixel import StripRGBPixel
 
 
+class CostumeState:
+    # there are different states for what the costume is 'doing'
+    Idle = 0  # no lights on, waiting on input
+    Charging = 1  # arms charging up in the correct color scheme, accents glowing
+    Armed = 2  # accents bright, charging paths on but dim, wrists and hands glowing bright
+    Calming = 3  # all lights calmly turn off
+
+    Good = 0  # in this case the target color is green, 0, 255, 0
+    Evil = 1  # in this case the target color is red, 255, 0, 0
+
+
 class ArmLedStrip:
     def __init__(self, gpio_pin_number: int):
         self.num_leds = 144
@@ -27,23 +38,25 @@ class ArmLedStrip:
             led_channel
         )
         self.strip.begin()
+        self.num_charging_waves = 3  # number of oscillations during charging
+        initial_offset = -math.pi / 2.0  # setting this as a quarter period makes it charge up nicely
+        self.lights_per_period = self.num_leds / self.num_charging_waves
         self.pixels = []
+        for i in range(0, self.num_leds):
+            x = i * (2 * math.pi / self.lights_per_period) + initial_offset
+            p = StripRGBPixel(i, x)
+            self.pixels.append(p)
+
+    def calm(self):
+        pass
 
     def charge(self):
         num_times_to_charge = 2  # number of times to charge before fading and resonating
         target_value = 15  # final target value for arm while resonating wrist
         num_steps = 20  # number of steps to fade to target value
-        num_waves = 3  # number of oscillations during charging
-        initial_offset = -math.pi / 2.0  # setting this as a quarter period makes it charge up nicely
         max_val = 255  # maximum brightness during charge-up
         amplitude = max_val / 2.0
-        lights_per_period = self.num_leds / num_waves
 
-        for i in range(0, self.num_leds):
-            x = i * (2 * math.pi / lights_per_period) + initial_offset
-            p = StripRGBPixel(i, x)
-            self.pixels.append(p)
-            
         # charge up the arm
         for iteration in range(0, self.num_leds * num_times_to_charge):
             # each iteration, we just want to walk from the end to the beginning, and
@@ -51,7 +64,7 @@ class ArmLedStrip:
             # adding a small shift to the calculated value
             for i in range(self.num_leds - 1, 0, -1):
                 self.pixels[i].green = self.pixels[i - 1].green
-            this_shift = iteration * 2 * math.pi * num_waves / self.num_leds
+            this_shift = iteration * 2 * math.pi * self.num_charging_waves / self.num_leds
             self.pixels[0].green = amplitude + amplitude * math.sin(self.pixels[0].x - this_shift)
             self.update()
 
@@ -74,8 +87,8 @@ class ArmLedStrip:
         self.update()
 
         # then resonate the last half period
-        periods_ignored = num_waves - 1
-        starting_led_of_last_period = lights_per_period * periods_ignored + 1
+        periods_ignored = self.num_charging_waves - 1
+        starting_led_of_last_period = self.lights_per_period * periods_ignored + 1
         starting_point_for_resonating = int(starting_led_of_last_period)
         resonating_value_modifiers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
                                       19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
@@ -94,12 +107,16 @@ class ArmLedStrip:
             r = int(p.red)
             g = int(p.green)
             b = int(p.blue)
-            self.strip.setPixelColor(i, Color(r, g, b))
+            self.strip.setPixelColor(i, Color(g, 0, g))
         self.strip.show()
         time.sleep(0.015)
 
 
 class DoctorStrangeCostume(ConfigBase):
+
+    def __init__(self):
+        arm_led_pin = 18  # GPIO pin connected to the pixels (18 uses PWM!)
+        self.arms = ArmLedStrip(arm_led_pin)  # for now both arms are parallel, ideally we do them individually L/R
 
     @staticmethod
     def setup_gpio():
@@ -117,8 +134,6 @@ class DoctorStrangeCostume(ConfigBase):
         return "Doctor Strange Full Costume"
 
     def run(self):
-        arm_led_pin = 18  # GPIO pin connected to the pixels (18 uses PWM!)
-        arms = ArmLedStrip(arm_led_pin)  # for now both arms are in parallel, ideally we could do them individually L/R
         GPIO.setup(36, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         print("Waiting for button press on board pin 36...")
         pressed = False
@@ -126,7 +141,7 @@ class DoctorStrangeCostume(ConfigBase):
             # button is pressed when pin is LOW
             if not GPIO.input(36):
                 if not pressed:
-                    arms.charge()
+                    self.arms.charge()
                     pressed = True
             # button not pressed (or released)
             else:
@@ -136,4 +151,4 @@ class DoctorStrangeCostume(ConfigBase):
 
 if __name__ == "__main__":
     d = DoctorStrangeCostume()
-    d.run()
+    d.arms.charge()
