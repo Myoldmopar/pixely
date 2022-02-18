@@ -80,6 +80,7 @@ class ArmLedStrip:
         starting_point_for_resonating = int(starting_led_of_last_period)
         resonating_value_modifiers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
                                       19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
+        # list(range(21)) + list(reversed(range(1, 20)))
         resonating_values = [target_value + x for x in resonating_value_modifiers]
         for _ in range(5):
             for val in resonating_values:
@@ -108,6 +109,10 @@ class DoctorStrangeCostume(ConfigBase):
         GPIO.setup(13, GPIO.OUT)
         GPIO.setup(15, GPIO.OUT)
         GPIO.setup(7, GPIO.OUT)
+        # GPIO.add_event_detect(channel, GPIO.RISING)
+        # time.sleep(20)
+        # if GPIO.event_detected(channel):
+        #     print('Button pressed')
 
     def name(self) -> str:
         return "Doctor Strange Full Costume"

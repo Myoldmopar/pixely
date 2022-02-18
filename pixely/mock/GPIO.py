@@ -29,6 +29,11 @@ class GPIO(object):
     # pull up/down status
     PUD_DOWN = 1
 
+    # event type
+    RISING = 1
+    FALLING = 2
+    BOTH = 3
+
     @staticmethod
     def input(x):
         pass
@@ -47,4 +52,12 @@ class GPIO(object):
 
     @staticmethod
     def setwarnings(flag: bool):
+        pass
+
+    @staticmethod
+    def add_event_detect(channel: int, event_type: int):
+        pass
+
+    @staticmethod
+    def event_detected(channel: int):
         pass
