@@ -1,5 +1,4 @@
 import logging
-from time import sleep
 import traceback
 
 from pixely.configuration import ConfigBase
@@ -38,21 +37,9 @@ class Operator(object):
         logging.debug("Operator started")
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(36, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         try:
-            print("Waiting for button press...")
-            pressed = False
-            while True:
-                # button is pressed when pin is LOW
-                if not GPIO.input(36):
-                    if not pressed:
-                        logging.debug(f"Running configuration: {self.configuration.name()}")
-                        self.configuration.run()
-                        pressed = True
-                # button not pressed (or released)
-                else:
-                    pressed = False
-                sleep(0.05)
+            logging.debug(f"Running configuration: {self.configuration.name()}")
+            self.configuration.run()
         except (NormalResetAndTurnOff, KeyboardInterrupt):
             pass  # don't need to do anything, the finally: block will clean things up
         except Exception as e:

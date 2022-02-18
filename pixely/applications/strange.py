@@ -119,7 +119,19 @@ class DoctorStrangeCostume(ConfigBase):
     def run(self):
         arm_led_pin = 18  # GPIO pin connected to the pixels (18 uses PWM!)
         arms = ArmLedStrip(arm_led_pin)  # for now both arms are in parallel, ideally we could do them individually L/R
-        arms.charge()
+        GPIO.setup(36, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        print("Waiting for button press on board pin 36...")
+        pressed = False
+        while True:
+            # button is pressed when pin is LOW
+            if not GPIO.input(36):
+                if not pressed:
+                    arms.charge()
+                    pressed = True
+            # button not pressed (or released)
+            else:
+                pressed = False
+            time.sleep(0.05)
 
 
 if __name__ == "__main__":
