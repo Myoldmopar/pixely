@@ -28,6 +28,7 @@ class GPIO(object):
 
     # pull up/down status
     PUD_DOWN = 1
+    PUD_UP = 2
 
     # event type
     RISING = 1

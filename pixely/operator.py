@@ -38,6 +38,7 @@ class Operator(object):
         logging.debug("Operator started")
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BOARD)
+        GPIO.setup(36, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         try:
             pressed = False
             while True:
