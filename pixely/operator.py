@@ -4,14 +4,18 @@ import traceback
 from pixely.configuration import ConfigBase
 from pixely.exceptions import NormalResetAndTurnOff
 
-logging.basicConfig(filename='debug.log', encoding='utf-8', level=logging.DEBUG)
+root_logger = logging.getLogger()
+root_logger.setLevel(logging.DEBUG)
+handler = logging.FileHandler('debug.log', 'w', 'utf-8')
+handler.setFormatter(logging.Formatter('%(name)s %(message)s'))
+root_logger.addHandler(handler)
 
 try:
     import RPi.GPIO as GPIO
     logging.debug("Importing actual RPi.GPIO library")
-except ImportError:
+except (ImportError, RuntimeError):
     from pixely.gpio_mock.GPIO import GPIO
-    logging.debug("Importing mock GPIO library (presumably for testing purposes...")
+    logging.debug("Importing mock GPIO library (presumably for testing purposes)")
 
 
 class Operator(object):
@@ -32,6 +36,7 @@ class Operator(object):
         GPIO.setmode(GPIO.BOARD)
         try:
             logging.debug(f"Running configuration: {self.configuration.name()}")
+
             self.configuration.run()
         except (NormalResetAndTurnOff, KeyboardInterrupt):
             pass  # don't need to do anything, the finally: block will clean things up

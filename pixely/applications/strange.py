@@ -1,18 +1,14 @@
 from rpi_ws281x import PixelStrip, Color
 import time
 import math
-from RPi import GPIO
+
+try:
+    import RPi.GPIO as GPIO
+except (ImportError, RuntimeError):
+    from pixely.gpio_mock.GPIO import GPIO
 
 from pixely.configuration import ConfigBase
-
-
-class IndividualPixel:
-    def __init__(self, _index, _x):
-        self.red = 0
-        self.green = 0
-        self.blue = 0
-        self.index = _index
-        self.x = _x
+from pixely.pixel import StripRGBPixel
 
 
 class ArmLedStrip:
@@ -41,7 +37,7 @@ class ArmLedStrip:
 
         for i in range(0, self.num_leds):
             x = i * (2 * math.pi / lights_per_period) + initial_offset
-            p = IndividualPixel(i, x)
+            p = StripRGBPixel(i, x)
             self.pixels.append(p)
             
         # charge up the arm
@@ -100,10 +96,8 @@ class ArmLedStrip:
 
 class DoctorStrangeCostume(ConfigBase):
 
-    def __init__(self):
-        super().__init__()
-
-    def setup_gpio(self):
+    @staticmethod
+    def setup_gpio():
         GPIO.setup(8, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         GPIO.setup(10, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         GPIO.setup(13, GPIO.OUT)

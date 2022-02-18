@@ -3,7 +3,7 @@ setup(
     name="Pixely",
     version="0.1",
     packages=find_packages(),
-    scripts=['pixely/applications/run_doctor_strange.py'],
+    scripts=['scripts/run_doctor_strange.py'],
     author="Me",
     author_email="me@me.com",
     description="Handling LED operations for costumes driven by Raspberry Pi",

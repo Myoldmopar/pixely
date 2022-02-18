@@ -1,16 +1,20 @@
+response = None
+
+
 class GPIO(object):
     """
     Provides a way to mock the GPIO class, useful for testing or just development on non-RPi machines
     """
 
-    def __init__(self):
-        self._response = None
+    @staticmethod
+    def set_next_response(x):
+        global response
+        response = x
 
-    def set_next_response(self, x):
-        self._response = x
-
-    def reset_next_response(self):
-        self._response = None
+    @staticmethod
+    def reset_next_response():
+        global response
+        response = None
 
     # Mocked stuff below
 
@@ -22,14 +26,25 @@ class GPIO(object):
     IN = 1
     OUT = 2
 
-    def input(self, x):
-        return self._response
+    # pull up/down status
+    PUD_DOWN = 1
 
-    def cleanup(self):
-        return self._response
+    @staticmethod
+    def input(x):
+        pass
 
-    def setmode(self, x):
-        return self._response
+    @staticmethod
+    def cleanup():
+        pass
 
-    def setup(self, pin, status):
-        return self._response
+    @staticmethod
+    def setmode(x):
+        pass
+
+    @staticmethod
+    def setup(pin: int, status: int, pull_up_down: int = 0):
+        pass
+
+    @staticmethod
+    def setwarnings(flag: bool):
+        pass
