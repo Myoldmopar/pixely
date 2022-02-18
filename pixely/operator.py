@@ -7,14 +7,17 @@ from pixely.exceptions import NormalResetAndTurnOff
 root_logger = logging.getLogger()
 root_logger.setLevel(logging.DEBUG)
 handler = logging.FileHandler('debug.log', 'w', 'utf-8')
-handler.setFormatter(logging.Formatter('%(name)s %(message)s'))
+handler.setFormatter(logging.Formatter(
+    fmt='%(asctime)s %(levelname)-8s %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+))
 root_logger.addHandler(handler)
 
 try:
     import RPi.GPIO as GPIO
     logging.debug("Importing actual RPi.GPIO library")
 except (ImportError, RuntimeError):
-    from pixely.gpio_mock.GPIO import GPIO
+    from pixely.mock.GPIO import GPIO
     logging.debug("Importing mock GPIO library (presumably for testing purposes)")
 
 
