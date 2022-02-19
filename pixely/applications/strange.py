@@ -77,6 +77,7 @@ class ArmLedStrip:
 
     def toggle_good_evil(self):
         self.good_or_evil = CostumeState.Good if self.good_or_evil == CostumeState.Evil else CostumeState.Evil
+        self.update()
 
     def charge(self):
         num_times_to_charge = 2  # number of times to charge before fading and resonating
