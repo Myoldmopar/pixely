@@ -75,6 +75,9 @@ class ArmLedStrip:
     # def calm(self):
     #     original_led_intensities = []
 
+    def toggle_good_evil(self):
+        self.good_or_evil = CostumeState.Good if self.good_or_evil == CostumeState.Evil else CostumeState.Evil
+
     def charge(self):
         num_times_to_charge = 2  # number of times to charge before fading and resonating
         target_value = 15  # final target value for arm while resonating wrist
@@ -169,17 +172,27 @@ class DoctorStrangeCostume(ConfigBase):
 
     def run(self):
         GPIO.setup(36, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        print("Waiting for button press on board pin 36...")
-        pressed = False
+        GPIO.setup(38, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(40, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        print("Waiting for button press ...")
+        doing_something = False
         while True:
             # button is pressed when pin is LOW
             if not GPIO.input(36):
-                if not pressed:
+                if not doing_something:
                     self.arms.charge()
-                    pressed = True
+                    doing_something = True
+            elif not GPIO.input(38):
+                if not doing_something:
+                    self.arms.toggle_good_evil()
+                    doing_something = True
+            # elif not GPIO.input(40):
+            #     if not doing_something:
+            #         self.arms.charge()
+            #         doing_something = True
             # button not pressed (or released)
             else:
-                pressed = False
+                doing_something = False
             time.sleep(0.05)
 
 
