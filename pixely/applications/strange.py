@@ -127,13 +127,17 @@ class ArmLedStrip:
                 self.update()
                 time.sleep(0.02)
         # this should be in a try...except block with a KeyboardInterrupt handler that cleans up and returns
-    
+
     def update(self):
         for i, p in enumerate(self.pixels):
             r = int(p.red)
             g = int(p.green)
             b = int(p.blue)
-            self.strip.setPixelColor(i, Color(r, g, b))
+            try:
+                self.strip.setPixelColor(i, Color(r, g, b))
+            except OverflowError:
+                print(f"Red: {r}, Green: {g}, Blue: {b}")
+                raise
         self.strip.show()
         time.sleep(0.015)
 
