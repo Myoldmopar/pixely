@@ -77,6 +77,8 @@ class ArmLedStrip:
 
     def toggle_good_evil(self):
         self.good_or_evil = CostumeState.Good if self.good_or_evil == CostumeState.Evil else CostumeState.Evil
+        for p in self.pixels:
+            p.set_pixel_intensity(p.intensity, self.good_or_evil)
         self.update()
 
     def charge(self):
