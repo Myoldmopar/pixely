@@ -1,3 +1,4 @@
+import sys
 import time
 import math
 
@@ -104,7 +105,10 @@ class ArmLedStrip:
         # now actually go in and gradually get them close to the target value (round-off error will occur)
         for step in range(0, num_steps):
             for i in range(0, self.num_leds):
-                self.pixels[i].set_pixel_intensity(int(self.pixels[i].intensity + step_sizes[i]), self.good_or_evil)
+                new_intensity = int(self.pixels[i].intensity + step_sizes[i])
+                if new_intensity < 0:
+                    new_intensity = 0
+                self.pixels[i].set_pixel_intensity(new_intensity, self.good_or_evil)
             self.update()
 
         # now one final pass to get them all to the target value
