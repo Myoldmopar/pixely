@@ -14,6 +14,29 @@ from pixely.configuration import ConfigBase
 from pixely.pixel import StripRGBPixel
 
 
+class StrangePixel(StripRGBPixel):
+    def __init__(self, index: int, x: float):
+        super().__init__(index, x)
+        self.intensity = 0
+
+    def set_pixel_intensity(self, intensity: int, good_or_evil: int):
+        """
+        Updates the pixel based on an intensity.  RGB values are updated according to good/evil status.
+        :param intensity: Intensity should be an integer from 0 to 255
+        :param good_or_evil: Integer value from CostumeState class
+        :return: Nothing
+        """
+        self.intensity = intensity
+        if good_or_evil == CostumeState.Good:
+            self.red = 0
+            self.green = int(intensity)
+            self.blue = 0
+        else:
+            self.red = int(intensity)
+            self.green = 0
+            self.blue = 0  # int(intensity)
+
+
 class CostumeState:
     # there are different states for what the costume is 'doing'
     Idle = 0  # no lights on, waiting on input
@@ -44,11 +67,12 @@ class ArmLedStrip:
         self.pixels = []
         for i in range(0, self.num_leds):
             x = i * (2 * math.pi / self.lights_per_period) + initial_offset
-            p = StripRGBPixel(i, x)
+            p = StrangePixel(i, x)
             self.pixels.append(p)
+        self.good_or_evil = CostumeState.Evil
 
-    def calm(self):
-        pass
+    # def calm(self):
+    #     original_led_intensities = []
 
     def charge(self):
         num_times_to_charge = 2  # number of times to charge before fading and resonating
@@ -63,27 +87,29 @@ class ArmLedStrip:
             # move the value from upstream down one, then calculate a new value for the zeroth element by
             # adding a small shift to the calculated value
             for i in range(self.num_leds - 1, 0, -1):
-                self.pixels[i].green = self.pixels[i - 1].green
+                self.pixels[i].set_pixel_intensity(self.pixels[i - 1].intensity, self.good_or_evil)
             this_shift = iteration * 2 * math.pi * self.num_charging_waves / self.num_leds
-            self.pixels[0].green = amplitude + amplitude * math.sin(self.pixels[0].x - this_shift)
+            self.pixels[0].set_pixel_intensity(
+                int(amplitude + amplitude * math.sin(self.pixels[0].x - this_shift)), self.good_or_evil
+            )
             self.update()
 
         # fade down to the target value
         # store the values before we start altering them
         step_sizes = []
         for i in range(0, self.num_leds):
-            actual_distance = target_value - self.pixels[i].green  # positive if we are too low
+            actual_distance = target_value - self.pixels[i].intensity  # positive if we are too low
             step_sizes.append(actual_distance / num_steps)
 
         # now actually go in and gradually get them close to the target value (round-off error will occur)
         for step in range(0, num_steps):
             for i in range(0, self.num_leds):
-                self.pixels[i].green += step_sizes[i]
+                self.pixels[i].set_pixel_intensity(int(self.pixels[i].intensity + step_sizes[i]), self.good_or_evil)
             self.update()
 
         # now one final pass to get them all to the target value
         for i in range(0, self.num_leds):
-            self.pixels[i].green = target_value
+            self.pixels[i].set_pixel_intensity(target_value, self.good_or_evil)
         self.update()
 
         # then resonate the last half period
@@ -97,7 +123,7 @@ class ArmLedStrip:
         for _ in range(5):
             for val in resonating_values:
                 for i in range(starting_point_for_resonating, self.num_leds):
-                    self.pixels[i].green = val
+                    self.pixels[i].set_pixel_intensity(val, self.good_or_evil)
                 self.update()
                 time.sleep(0.02)
         # this should be in a try...except block with a KeyboardInterrupt handler that cleans up and returns
@@ -107,7 +133,7 @@ class ArmLedStrip:
             r = int(p.red)
             g = int(p.green)
             b = int(p.blue)
-            self.strip.setPixelColor(i, Color(g, 0, g))
+            self.strip.setPixelColor(i, Color(r, g, b))
         self.strip.show()
         time.sleep(0.015)
 
